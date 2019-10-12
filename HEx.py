@@ -89,12 +89,12 @@ class Misc:
             bar.update(t + 1)
         bar.finish()
     def check_Page(driver):
-        driver.get("https://br.hackerexperience.com/")
-        if not "Hacker Experience - The Internet Under Attack is an online hacking simulation game." in driver.page_source:
+        driver.get("https://hackerwars.io/")
+        if not "Hacker Wars is an online hacking simulation game. Play" in driver.page_source:
             return False
         return True
     def check_Login(driver, user):
-        driver.get("https://br.hackerexperience.com/profile")
+        driver.get("https://hackerwars.io/profile")
         if not user in driver.find_element_by_xpath('//*[@id="content"]/div[3]/div/div/div/div[1]/ul/li[1]/a/span[2]').text:
             return False
         return True
@@ -115,7 +115,7 @@ class User:
     def login(driver, user, password, apiSolver, apikey):
         while True:
             while True:
-                driver.get("https://br.hackerexperience.com/")
+                driver.get("https://hackerwars.io/")
                 if Misc.check_Page(driver):
                     break
                 if Misc.check_CFBypass(driver):
@@ -146,44 +146,44 @@ class User:
         return
     def ip(driver):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/")
+        driver.get("https://hackerwars.io/")
         ip = driver.find_element_by_xpath('/html/body/div[5]/div[1]/div/div[1]/span').text
         Misc.closeTab(driver, bak)
         return ip
     def money(driver):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/")
+        driver.get("https://hackerwars.io/")
         money = driver.find_element_by_xpath('/html/body/div[5]/div[3]/div/div/div/div[2]/div[1]/div[2]/div/div[2]/div/span').text
         Misc.closeTab(driver, bak)
         return money
     def space(driver):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/software")
+        driver.get("https://hackerwars.io/software")
         space = driver.find_element_by_xpath('//*[@id=\"softwarebar\"]/div/span').text
         Misc.closeTab(driver, bak)
         return space
 class Soft:
     def version(driver, softwareId):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/software?id=" + softwareId)
+        driver.get("https://hackerwars.io/software?id=" + softwareId)
         r = driver.find_element_by_xpath('//*[@id="content"]/div[3]/div/div/div/div[2]/div[1]/div[1]/div[2]/table/tbody/tr[2]/td[2]').text
         Misc.closeTab(driver, bak)
         return r
     def licensed(driver, softwareId):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/software?id=" + softwareId)
+        driver.get("https://hackerwars.io/software?id=" + softwareId)
         r = driver.find_element_by_xpath('//*[@id="content"]/div[3]/div/div/div/div[2]/div[1]/div[1]/div[2]/table/tbody/tr[3]/td[2]/font').text
         Misc.closeTab(driver, bak)
         return r
     def name(driver, softwareId):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/software?id=" + softwareId)
+        driver.get("https://hackerwars.io/software?id=" + softwareId)
         r = driver.find_element_by_xpath('//*[@id="content"]/div[3]/div/div/div/div[2]/div[1]/div[1]/div[2]/table/tbody/tr[1]/td[2]').text
         Misc.closeTab(driver, bak)
         return r
     def id(driver, softwareName):
         bak = Misc.openTab(driver)
-        driver.get("https://br.hackerexperience.com/software")
+        driver.get("https://hackerwars.io/software")
         trs = driver.find_element_by_xpath('//*[@id="content"]/div[3]/div/div/div/div[2]/div/table/tbody').find_elements_by_tag_name('tr')
         r = ""
         for tr in trs:
@@ -193,13 +193,13 @@ class Soft:
         return r
     def delete(driver, id):
         bak = Misc.openTab(driver)
-        driver.get('https://br.hackerexperience.com/software.php?action=del&id=' + id, cookies=cookies)
+        driver.get('https://hackerwars.io/software.php?action=del&id=' + id, cookies=cookies)
         Misc.closeTab(driver, bak)
         return
     def research(driver, softwareId, delete, apiSolver, apikey):
         while True:
             while True:
-                driver.get("https://br.hackerexperience.com/university?id=" + softwareId)
+                driver.get("https://hackerwars.io/university?id=" + softwareId)
                 if Misc.check_Page(driver):
                     break
                 if Misc.check_CFBypass(driver):
@@ -230,44 +230,47 @@ class Soft:
 class Task:
     def time(driver, id):
         bak = Misc.openTab(driver)
-        driver.get('https://br.hackerexperience.com/processes')
-        time = int(driver.page_source.split(");$('#process" + str(id))[0].split(".getTime()+")[1].split("*")[0])
+        driver.get('https://hackerwars.io/processes')
+        soup = BeautifulSoup(driver.page_source, "lxml")
+        tasks = soup.find('div', attrs={'class': 'widget-content padding noborder'}).find_all('li')
+        for task in tasks:
+            taskInfo = task.find('div', attrs={'class': 'process'})
+            if id == taskInfo['data-process-id']:
+                return int(taskInfo['data-process-timeleft'])
         Misc.closeTab(driver, bak)
-        return time
+        return 0
     def delete(driver, id):
         bak = Misc.openTab(driver)
-        driver.get('https://br.hackerexperience.com/processes?pid=' + id + '&del=1')
+        driver.get('https://hackerwars.io/processes?pid=' + id + '&del=1')
         Misc.closeTab(driver, bak)
         return
     def id(driver, target):
         bak = Misc.openTab(driver)
-        driver.get('https://br.hackerexperience.com/processes')
+        driver.get('https://hackerwars.io/processes')
         soup = BeautifulSoup(driver.page_source, 'lxml')
         tasks = soup.find('div', attrs={'class': 'widget-content padding noborder'}).find_all('li')
-        res = 0
         for task in tasks:
             name = task.find('div', attrs={'class': 'proc-desc'}).text
             if target in name:
-                res = task.find('div', attrs={'class': 'span5'}).find('div')['id'].split('process')[1]
+                return task.find('div', attrs={'class': 'process'})['data-process-id']
         Misc.closeTab(driver, bak)      
-        return res  
+        return 0  
     def complete(driver, id):
         bak = Misc.openTab(driver)
-        driver.get('https://br.hackerexperience.com/processes?pid=' + id)
+        driver.get('https://hackerwars.io/processes?pid=' + id)
         Misc.closeTab(driver, bak)
         return
     def name(driver, id):
         bak = Misc.openTab(driver)
-        driver.get('https://br.hackerexperience.com/processes')
+        driver.get('https://hackerwars.io/processes')
         soup = BeautifulSoup(driver.page_source, 'lxml')
         tasks = soup.find('div', attrs={'class': 'widget-content padding noborder'}).find_all('li')
-        name = 0
         for task in tasks:
-            task_id = task.find('div', attrs={'class': 'span5'}).find('div')['id'].split('process')[1]
-            if id in task_id:
-                name = task.find('div').text
+            taskInfo = task.find('div', attrs={'class': 'process'})
+            if id == taskInfo['data-process-id']:
+                return task.find('div').text
         Misc.closeTab(driver, bak)
-        return name
+        return ""
 class Selenium:
     def open(cwd):
         chrome_options = webdriver.ChromeOptions()
